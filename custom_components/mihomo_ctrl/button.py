@@ -43,5 +43,20 @@ class MihomoDelayTestButton(ButtonEntity):
         try:
             LOGGER.info("Triggering latency test on Mihomo group %s", self.group_name)
             await self.client.async_test_delay(self.group_name)
+            
+            # Delay force update of the associated select entity (allow Mihomo to complete the test)
+            import asyncio
+            async def delay_update():
+                await asyncio.sleep(2)
+                # Entity id matching select unique id mapping logic
+                select_entity_id = f"select.mihomo_{self.group_name.lower().replace(' ', '_')}"
+                LOGGER.info("Triggering update for associated selector entity: %s", select_entity_id)
+                await self.hass.services.async_call(
+                    "homeassistant",
+                    "update_entity",
+                    {"entity_id": select_entity_id}
+                )
+                
+            asyncio.create_task(delay_update())
         except Exception as err:
             LOGGER.error("Latency test button press failed for %s: %s", self.group_name, err)

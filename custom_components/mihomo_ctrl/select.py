@@ -36,7 +36,7 @@ class MihomoGroupSelect(SelectEntity):
         self.group_name = name
         self._attr_name = f"Mihomo {name}"
         self._attr_unique_id = f"mihomo_select_{name.lower().replace(' ', '_')}"
-        self._unsub_callback = None
+        self._attr_should_poll = True
         
         # Read available options and selection
         self._update_from_data(data, all_proxies)
@@ -57,29 +57,22 @@ class MihomoGroupSelect(SelectEntity):
                 latest_delay = history[-1].get("delay", 0)
                 if latest_delay > 0:
                     latency_map[node_name] = latest_delay
+                    
+        # 2. 如果当前选中的选项还没有延迟，但策略组自身有 history
+        # 那说明这次测速是只记录在策略组上的，我们将当前选中节点的延迟从策略组的 history 中取出
+        now_option = self._attr_current_option
+        if now_option and latency_map.get(now_option, 0) == 0:
+            group_history = data.get("history", [])
+            if group_history:
+                latest_delay = group_history[-1].get("delay", 0)
+                if latest_delay > 0:
+                    latency_map[now_option] = latest_delay
                 
         # Store metadata in attributes for advanced frontend custom Lovelace cards
         self._attr_extra_state_attributes = {
             "type": data.get("type"),
             "latency": latency_map
         }
-
-    async def async_added_to_hass(self) -> None:
-        """Register callbacks."""
-        # When WS triggers, we also occasionally pull REST API to refresh selector state
-        self._unsub_callback = self.client.register_update_callback(self._handle_client_update)
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Cleanup callbacks."""
-        if self._unsub_callback:
-            self._unsub_callback()
-
-    def _handle_client_update(self) -> None:
-        """When client reports speed changes, occasionally query REST proxies to update selected node."""
-        # To avoid rate-limiting the REST API, we can trigger a refresh task.
-        # However, selecting a node updates it directly. This is a callback fallback.
-        # We can run an update task in HASS.
-        self.hass.async_create_task(self.async_update())
 
     async def async_update(self) -> None:
         """Pull fresh state for this proxy group."""
