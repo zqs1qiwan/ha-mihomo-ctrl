@@ -1,2 +1,0 @@
-"""Tests configuration."""
-import pytest
