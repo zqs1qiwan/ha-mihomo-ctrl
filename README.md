@@ -12,7 +12,7 @@
 
 [English README](#english-readme) | 中文说明
 
-**ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、专业级 Mihomo (Clash) 核心控制器。该集成不包含底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行高效控制、策略切换与物理联动。
+**ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、专业级 Mihomo (Clash) 核心控制器。该集成不包含底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行高效控制、策略切换与物理开关。
 
 ---
 
