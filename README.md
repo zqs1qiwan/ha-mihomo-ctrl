@@ -1,5 +1,9 @@
 # ha-mihomo-ctrl 🚀
 
+<p align="center">
+  <img src="assets/logo.png" alt="ha-mihomo-ctrl Logo" width="180" height="180">
+</p>
+
 [English README](#english-readme) | 中文说明
 
 **ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、极客范 Mihomo (Clash) 核心控制器。它不含任何复杂的底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行零阻塞的高效控制、策略切换与物理联动。
