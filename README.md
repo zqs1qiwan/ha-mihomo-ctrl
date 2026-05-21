@@ -1,4 +1,4 @@
-# ha-mihomo-ctrl 🚀
+<h1 align="center">Homeassistant Mihomo Controller</h1>
 
 <p align="center">
   <img src="assets/logo.png" alt="ha-mihomo-ctrl Logo" width="180" height="180">
@@ -139,7 +139,7 @@ cards:
 
 <div id="english-readme"></div>
 
-# ha-mihomo-ctrl 🚀 (English)
+<h1 align="center">Homeassistant Mihomo Controller (English)</h1>
 
 <p align="center">
   <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=zqs1qiwan&repository=ha-mihomo-ctrl&category=integration" target="_blank">
