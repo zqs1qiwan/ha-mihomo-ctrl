@@ -1,9 +1,10 @@
 {
   "domain": "mihomo_ctrl",
   "name": "Mihomo Controller",
-  "codeowners": ["@laobai"],
+  "codeowners": ["@zqs1qiwan"],
   "config_flow": true,
-  "documentation": "https://github.com/laobai/ha-mihomo-ctrl",
+  "documentation": "https://github.com/zqs1qiwan/ha-mihomo-ctrl",
+  "issue_tracker": "https://github.com/zqs1qiwan/ha-mihomo-ctrl/issues",
   "iot_class": "local_push",
   "requirements": [],
   "version": "1.0.0"

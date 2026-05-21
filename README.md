@@ -4,6 +4,12 @@
   <img src="assets/logo.png" alt="ha-mihomo-ctrl Logo" width="180" height="180">
 </p>
 
+<p align="center">
+  <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=zqs1qiwan&repository=ha-mihomo-ctrl&category=integration" target="_blank">
+    <img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.">
+  </a>
+</p>
+
 [English README](#english-readme) | 中文说明
 
 **ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、极客范 Mihomo (Clash) 核心控制器。它不含任何复杂的底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行零阻塞的高效控制、策略切换与物理联动。
@@ -57,6 +63,12 @@
 ---
 
 ## 🎨 工业级 Lovelace 看板 YAML 推荐
+
+### 💡 运行效果预览 (Dashboard Preview)
+
+<p align="center">
+  <img src="assets/dashboard_demo.jpg" alt="Lovelace Dashboard Demo" width="380">
+</p>
 
 为了完美适配这套极简、无延迟、工业级的控制系统，推荐在 **概览 (Overview)** 页面中，点击编辑控制面板，添加一个 **手动 (Manual)** 卡片，并覆盖粘贴以下 YAML：
 
@@ -128,6 +140,12 @@ cards:
 <div id="english-readme"></div>
 
 # ha-mihomo-ctrl 🚀 (English)
+
+<p align="center">
+  <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=zqs1qiwan&repository=ha-mihomo-ctrl&category=integration" target="_blank">
+    <img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.">
+  </a>
+</p>
 
 A high-performance, developer-grade Home Assistant custom integration to monitor and control an external Mihomo (Clash) Core. 
 
