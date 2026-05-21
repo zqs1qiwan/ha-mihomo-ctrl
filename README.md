@@ -37,7 +37,9 @@
 
 ## ⚙️ 初始化配置 (Setup & Configuration)
 
-1. 重启后刷新浏览器，进入 HA 网页端 -> **设置 (Settings)** -> **设备与服务 (Devices & Services)**。
+[![点击一键添加集成](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=mihomo_ctrl)
+
+1. 点击上方徽章，或刷新浏览器进入 HA 网页端 -> **设置 (Settings)** -> **设备与服务 (Devices & Services)**。
 2. 点击右下角 **添加集成 (Add Integration)**，搜索并选择 **`Mihomo Controller`**。
 3. 在引导弹窗中，输入参数：
    * **API 控制器地址 (URL)**: 输入你的 Clash 外部控制器 API 端口（例如 `192.168.2.1:9090`）。
@@ -157,6 +159,8 @@ A high-performance, developer-grade Home Assistant custom integration to monitor
 ---
 
 ## ⚙️ Setup
+
+[![Open your Home Assistant instance and start the setup flow of a specific integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=mihomo_ctrl)
 
 1. Settings -> **Devices & Services** -> **Add Integration** -> Search **`Mihomo Controller`**.
 2. Fill out the API details:
