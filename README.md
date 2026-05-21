@@ -12,26 +12,26 @@
 
 [English README](#english-readme) | 中文说明
 
-**ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、极客范 Mihomo (Clash) 核心控制器。它不含任何复杂的底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行零阻塞的高效控制、策略切换与物理联动。
+**ha-mihomo-ctrl** 是一个专为 **Home Assistant** 设计的高性能、专业级 Mihomo (Clash) 核心控制器。该集成不包含底层代理实现，专注于通过外部 API 对路由器或服务器上运行的 Mihomo (Clash) Core 进行高效控制、策略切换与物理联动。
 
 ---
 
-## 🌟 核心杀手级特性 (Core Features)
+## 核心技术特性 (Core Features)
 
 1. **零轮询 · WebSocket 异步推流 (`local_push`)**
-   市面上的同类集成通常采用 3~5 秒一次的 REST API 轮询来获取网速与连接，这不仅滞后，还会对路由器造成高频请求负担。我们采用了 **WebSocket 异步单链接推流**（直接连接 `/traffic` 和 `/connections` 端点）。由 Mihomo 核心主动实时推送数据，实现 **1s 级无延迟、流畅的速率/连接数刷新**，而对 HA 和路由器的 CPU 开销几乎为零。
-2. **免重启优雅重连（指数退避机制）**
-   当 OpenClash 订阅更新、重载或者路由器重启时，集成会自动静默进入指数退避（Exponential Backoff）重连状态，绝不向 HA 日志狂喷 TCP Traceback 异常，更不会造成 HA Event Loop 阻塞或界面卡死，连接恢复后自动重新握手恢复。
+   同类集成通常采用基于时间间隔的 REST API 轮询机制来获取网速与连接状态，存在延迟且增加了路由器的系统开销。本集成采用 **WebSocket 异步单链接推流**（直接连接 `/traffic` 和 `/connections` 端点），由 Mihomo Core 主动实时推送数据，实现 1 秒级无延迟的速率与连接数刷新，最大程度减少对 Home Assistant 和路由器的 CPU 开销。
+2. **优雅重连（指数退避机制）**
+   当 OpenClash 订阅更新、重载或路由器重启时，集成会自动进入指数退避（Exponential Backoff）重连状态，避免在 Home Assistant 日志中输出大量无意义的 TCP Traceback 异常，防止阻塞 HA Event Loop 导致界面无响应。连接恢复后将自动重新建立连接。
 3. **原生 `Select` 策略组生态**
-   集成启动时会自动扫描 Mihomo 下所有的 `Selector`、`Fallback`、`URLTest` 等策略组。并将其映射为标准的 **`select.mihomo_group_[group_name]`** 实体。你可以直接使用 HA 自带的卡片在前端秒切节点，完美契合 HA 原生生态。
+   集成启动时会自动扫描 Mihomo 下所有的 `Selector`、`Fallback`、`URLTest` 等策略组，并将其映射为标准的 **`select.mihomo_group_[group_name]`** 实体。用户可直接在前端卡片中切换节点，完美契合 Home Assistant 原生生态。
 4. **一键延迟测速与穿透挂载**
-   为每一个策略组注册一个测速按钮。触发测速后，测速结果将采用**双规穿透（Dual-Fallback）算法**直接写入对应策略组实体的 `latency` 属性中（即使你的配置没有为子物理节点单独做测速记录，也会通过策略组的 history 自动提取出当前选中节点的延迟）。
-5. **无缝内嵌 OpenWrt/OpenClash 物理开关 (SSH 联动) 🔐**
-   **全网首创！** 本集成不仅控制 Clash 的节点，还**直接内嵌了对 OpenWrt (OpenClash) 底层服务的物理开关控制**。只要勾选启用并填写 SSH 私钥（或密码），集成会直接在后台利用异步非阻塞 Shell 通过 SSH 运行 `uci` 指令来彻底开启或关闭 OpenClash 守护进程。**你再也不需要手动去编辑 `configuration.yaml` 手写 command_line / template switch 了！**
+   为每一个策略组注册一个测速按钮。触发测速后，测速结果将采用双规穿透（Dual-Fallback）算法直接写入对应策略组实体的 `latency` 属性中（即使配置中没有为子物理节点单独做测速记录，也会通过策略组的历史数据自动提取当前选中节点的延迟）。
+5. **内嵌 OpenWrt/OpenClash 物理开关 (SSH 联动)**
+   本集成不仅控制 Clash 的策略节点，还内嵌了对 OpenWrt (OpenClash) 底层服务的物理开关控制。启用并配置 SSH 凭证后，集成会在后台利用异步非阻塞 Shell 通过 SSH 运行 `uci` 指令来开启或关闭 OpenClash 守护进程。无需手动在 `configuration.yaml` 中配置自定义的 `command_line` 或 `template` 开关。
 
 ---
 
-## 📦 安装方法 (Installation)
+## 安装方法 (Installation)
 
 ### 方法 1: 通过 HACS (推荐)
 1. 打开 Home Assistant，进入 **HACS** -> **Integrations**。
@@ -45,32 +45,32 @@
 
 ---
 
-## ⚙️ 初始化配置 (Setup & Configuration)
+## 初始化配置 (Setup & Configuration)
 
 [![点击一键添加集成](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=mihomo_ctrl)
 
-1. 点击上方徽章，或刷新浏览器进入 HA 网页端 -> **设置 (Settings)** -> **设备与服务 (Devices & Services)**。
+1. 点击上方徽章，或进入 HA 网页端 -> **设置 (Settings)** -> **设备与服务 (Devices & Services)**。
 2. 点击右下角 **添加集成 (Add Integration)**，搜索并选择 **`Mihomo Controller`**。
 3. 在引导弹窗中，输入参数：
    * **API 控制器地址 (URL)**: 输入你的 Clash 外部控制器 API 端口（例如 `192.168.2.1:9090`）。
    * **秘钥 Bearer Token (Token)**: 输入你的外部控制器密钥（若无请保持留空）。
-   * **是否启用 OpenWrt 物理开关**: 如果你想一站式管理 OpenWrt 上的 OpenClash 运行状态，**请勾选它**。勾选后可以进一步输入：
+   * **是否启用 OpenWrt 物理开关**: 如需一站式管理 OpenWrt 上的 OpenClash 运行状态，请勾选它。勾选后可以进一步输入：
      * **SSH 宿主机 IP**: OpenWrt 路由器的 IP 地址（如 `192.168.2.1`）。
      * **SSH 用户名**: 默认 `root`。
      * **SSH 秘钥路径**: 默认 `/config/sshkeys/id_rsa_ha`（你 HA 容器内用于 SSH 免密登录路由器的私钥路径）。
-4. 点击 **提交 (Submit)** 即可瞬间上线！
+4. 点击 **提交 (Submit)** 完成配置。
 
 ---
 
-## 🎨 工业级 Lovelace 看板 YAML 推荐
+## Lovelace 看板配置推荐 (Lovelace Dashboard Config)
 
-### 💡 运行效果预览 (Dashboard Preview)
+### 运行效果预览 (Dashboard Preview)
 
 <p align="center">
   <img src="assets/dashboard_demo.jpg" alt="Lovelace Dashboard Demo" width="380">
 </p>
 
-为了完美适配这套极简、无延迟、工业级的控制系统，推荐在 **概览 (Overview)** 页面中，点击编辑控制面板，添加一个 **手动 (Manual)** 卡片，并覆盖粘贴以下 YAML：
+为了完美适配这套极简、无延迟、工业级的控制系统，推荐在 **概览 (Overview)** 页面中，点击编辑控制面板，添加一个 **手动 (Manual)**卡片，并覆盖粘贴以下 YAML：
 
 ```yaml
 type: vertical-stack
@@ -154,43 +154,44 @@ A high-performance, developer-grade Home Assistant custom integration to monitor
 ## Key Features
 
 1. **Zero-Polling · WebSockets Push (`local_push`)**
-   Unlike ordinary integrations that constantly poll the REST API every 3~5s (causing heavy lag and CPU overhead), we stream real-time speeds and connection counts via a persistent **WebSocket connection** (`/traffic` & `/connections`). Get smooth **1-second updates** with absolutely zero blocked HA event loops and close-to-zero CPU load on your router.
-2. **指数退避 Reconnection Resilience**
-   If OpenClash triggers a subscription reload or reboots, the integration gracefully enters an exponential backoff retry state. It reconnects silently without flooding HA logs with Tracebacks or locking up the interface.
+   Unlike standard integrations that constantly poll the REST API every 3–5 seconds (causing lag and unnecessary CPU overhead), this integration streams real-time traffic speeds and connection counts via a persistent **WebSocket connection** (`/traffic` and `/connections`). It provides smooth 1-second updates with no Event Loop blockage and minimal CPU load on your router.
+2. **Graceful Reconnection (Exponential Backoff)**
+   If OpenClash triggers a subscription reload or the router reboots, the integration enters an exponential backoff reconnection state. It reconnects silently without flooding Home Assistant logs with TCP connection Tracebacks or locking up the interface.
 3. **Native `Select` Entities Mapping**
-   Discovers your Mihomo strategy groups automatically and translates them into standard HA `select` entities. Switch nodes cleanly from Lovelace cards using native HA dropdowns.
+   Automatically discovers Mihomo strategy groups (such as `Selector`, `Fallback`, `URLTest`) and maps them to standard **`select.mihomo_group_[group_name]`** entities. Switch nodes directly via Home Assistant's native cards.
 4. **On-Demand Delay Testing & Dual-Fallback Mapping**
-   Exposes a button entity for each group to trigger a core-side delay test. Latencies are mapped back into the `latency` attribute of the `select` entity using a **dual-fallback algorithm** (retrieves from both physical nodes and group histories).
-5. **Built-in OpenWrt/OpenClash Physical Switch Control (SSH Bridge) 🔐**
-   **First of its kind!** Seamlessly turn your OpenClash daemon on/off right within the integration. It executes async non-blocking SSH `uci` commands directly on your OpenWrt router. **Zero template switches or custom command lines required in your YAML!**
+   Exposes button entities to trigger core-side delay tests for each strategy group. Results are mapped back to the `latency` attribute of the corresponding `select` entity using a dual-fallback algorithm (retrieving latencies from physical nodes or group histories).
+5. **Built-in OpenWrt/OpenClash Physical Switch Control (SSH Bridge)**
+   Provides direct control over the OpenClash daemon on OpenWrt via SSH. It executes asynchronous non-blocking SSH `uci` commands on your router, eliminating the need to configure custom `command_line` or `template` switches in `configuration.yaml`.
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Method 1: Via HACS (Recommended)
 1. Open Home Assistant -> **HACS** -> **Integrations**.
 2. Click the three dots in the top-right -> **Custom repositories**.
 3. Add `https://github.com/zqs1qiwan/ha-mihomo-ctrl` as an **Integration**.
-4. Search for `Mihomo Controller`, download it, and restart HA.
+4. Search for `Mihomo Controller`, download it, and restart Home Assistant.
 
 ### Method 2: Manual
-1. Download the repo and copy `custom_components/mihomo_ctrl` into your HA `/config/custom_components/` folder.
-2. Restart HA.
+1. Download this repository and copy the `custom_components/mihomo_ctrl` folder into your HA `/config/custom_components/` directory.
+2. Restart Home Assistant.
 
 ---
 
-## ⚙️ Setup
+## Setup & Configuration
 
 [![Open your Home Assistant instance and start the setup flow of a specific integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=mihomo_ctrl)
 
-1. Settings -> **Devices & Services** -> **Add Integration** -> Search **`Mihomo Controller`**.
+1. Settings -> **Devices & Services** -> **Add Integration** -> Search for **`Mihomo Controller`**.
 2. Fill out the API details:
    * **API Base URL**: IP:Port of your Clash REST API (e.g., `192.168.2.1:9090`).
-   * **Secret Token**: Bearer token (if configured, or keep blank).
-   * **Enable OpenWrt Physical Switch**: Check this to control OpenClash daemon via SSH. Provide the SSH Host, User (`root`), and Path to the Private Key (e.g. `/config/sshkeys/id_rsa_ha`).
+   * **Secret Token**: Bearer token (if configured, otherwise keep blank).
+   * **Enable OpenWrt Physical Switch**: Check this to control the OpenClash daemon via SSH. Provide the SSH Host, User (`root`), and Path to the Private Key (e.g., `/config/sshkeys/id_rsa_ha`).
 
 ---
 
 ## License
+
 MIT License. Created by [laobai](https://github.com/zqs1qiwan).
