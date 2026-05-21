@@ -3,7 +3,7 @@ import logging
 DOMAIN = "mihomo_ctrl"
 LOGGER = logging.getLogger(__package__)
 
-PLATFORMS = ["sensor", "select", "button"]
+PLATFORMS = ["sensor", "select", "button", "switch"]
 
 CONF_URL = "url"
 CONF_TOKEN = "token"

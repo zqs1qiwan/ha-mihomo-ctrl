@@ -6,7 +6,11 @@
         "description": "Please enter the Mihomo API connection details.",
         "data": {
           "url": "API Endpoint (e.g. 192.168.2.1:9090)",
-          "token": "Secret Bearer Token (optional)"
+          "token": "Secret Bearer Token (optional)",
+          "enable_physical_switch": "Enable OpenWrt Physical Switch",
+          "ssh_host": "SSH Host (OpenWrt Address)",
+          "ssh_user": "SSH Username",
+          "ssh_key": "SSH Private Key Path"
         }
       }
     },

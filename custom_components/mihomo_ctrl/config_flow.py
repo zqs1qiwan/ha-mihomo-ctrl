@@ -32,6 +32,10 @@ class MihomoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_URL, default="127.0.0.1:9090"): str,
                 vol.Optional(CONF_TOKEN): str,
+                vol.Optional("enable_physical_switch", default=False): bool,
+                vol.Optional("ssh_host", default="192.168.2.1"): str,
+                vol.Optional("ssh_user", default="root"): str,
+                vol.Optional("ssh_key", default="/config/sshkeys/id_rsa_ha"): str,
             }),
             errors=errors,
         )

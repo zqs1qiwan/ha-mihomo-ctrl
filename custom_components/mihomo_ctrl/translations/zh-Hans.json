@@ -6,7 +6,11 @@
         "description": "请输入宿主机上运行的 Mihomo (Clash) 外部控制端口 API 详情",
         "data": {
           "url": "API 控制器地址 (例如 192.168.2.1:9090)",
-          "token": "秘钥 Bearer Token (可选)"
+          "token": "秘钥 Bearer Token (可选)",
+          "enable_physical_switch": "是否启用 OpenWrt 物理开关",
+          "ssh_host": "SSH 主机 (OpenWrt 地址)",
+          "ssh_user": "SSH 用户名",
+          "ssh_key": "SSH 私钥路径"
         }
       }
     },
