@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.HA_VERSION
+.ha_run.lock
+*.db
+*.log
