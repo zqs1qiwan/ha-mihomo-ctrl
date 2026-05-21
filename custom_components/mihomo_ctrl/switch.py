@@ -36,8 +36,8 @@ class MihomoPhysicalSwitch(SwitchEntity):
         self._ssh_host = ssh_host
         self._ssh_user = ssh_user
         self._ssh_key = ssh_key
-        self._attr_name = "OpenClash Physical Switch"
-        self._attr_unique_id = f"openclash_physical_switch_{ssh_host.replace('.', '_')}"
+        self._attr_name = "OpenClash"
+        self._attr_unique_id = f"openclash_switch_{ssh_host.replace('.', '_')}"
         self._attr_icon = "mdi:router-wireless"
         self._attr_is_on = False
 

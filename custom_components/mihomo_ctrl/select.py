@@ -22,7 +22,7 @@ async def async_setup_entry(
     selectors = []
     for name, proxy in proxies.items():
         if proxy.get("type") in ("Selector", "Fallback", "URLTest"):
-            selectors.append(MihomoGroupSelect(client, name, proxy))
+            selectors.append(MihomoGroupSelect(client, name, proxy, proxies))
             
     async_add_entities(selectors)
 
@@ -30,7 +30,7 @@ async def async_setup_entry(
 class MihomoGroupSelect(SelectEntity):
     """Representation of a Mihomo strategy group selector."""
 
-    def __init__(self, client, name: str, data: dict) -> None:
+    def __init__(self, client, name: str, data: dict, all_proxies: dict) -> None:
         """Initialize."""
         self.client = client
         self.group_name = name
@@ -39,9 +39,9 @@ class MihomoGroupSelect(SelectEntity):
         self._unsub_callback = None
         
         # Read available options and selection
-        self._update_from_data(data)
+        self._update_from_data(data, all_proxies)
 
-    def _update_from_data(self, data: dict) -> None:
+    def _update_from_data(self, data: dict, all_proxies: dict) -> None:
         """Process group nodes, selection and latency."""
         self._attr_current_option = data.get("now")
         # List of sub nodes
@@ -49,12 +49,14 @@ class MihomoGroupSelect(SelectEntity):
         
         # Parse child node latencies
         latency_map = {}
-        for item in data.get("history", []):
-            # history lists previous delay test results
-            delay = item.get("delay", 0)
-            if delay > 0:
-                # We can map each history node's delay
-                pass
+        for node_name in self._attr_options:
+            node_info = all_proxies.get(node_name, {})
+            history = node_info.get("history", [])
+            if history:
+                # history is a list of dicts with delay test results
+                latest_delay = history[-1].get("delay", 0)
+                if latest_delay > 0:
+                    latency_map[node_name] = latest_delay
                 
         # Store metadata in attributes for advanced frontend custom Lovelace cards
         self._attr_extra_state_attributes = {
@@ -83,9 +85,10 @@ class MihomoGroupSelect(SelectEntity):
         """Pull fresh state for this proxy group."""
         try:
             proxies_data = await self.client.async_get_proxies()
-            group_data = proxies_data.get("proxies", {}).get(self.group_name)
+            all_proxies = proxies_data.get("proxies", {})
+            group_data = all_proxies.get(self.group_name)
             if group_data:
-                self._update_from_data(group_data)
+                self._update_from_data(group_data, all_proxies)
                 self.async_write_ha_state()
         except Exception as err:
             LOGGER.debug("Error updating selector %s: %s", self.group_name, err)
